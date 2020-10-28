@@ -326,8 +326,7 @@ def UnetEffLite(
     backbone = tfkeras.Model(inputs = backbone.input, outputs =  backbone.layers[-4].output)
     json_text = backbone.to_json()
     json_text_replaced = json_text.replace("224", "512")
-    backbone = tfkeras.models.model_from_json(json_text_replaced)
-
+    backbone = tfkeras.models.model_from_json(json_text_replaced)    
 
     encoder_features = [
         "efficientnet-lite0/model/blocks_11/Relu6_0",
@@ -353,6 +352,8 @@ def UnetEffLite(
     # lock encoder weights for fine-tuning
     if encoder_freeze:
         freeze_model(backbone, **kwargs)
+        
+    model.load_weights(model_path, by_name=True, skip_mismatch=True)
 
     # loading model weights
     # if weights is not None:
